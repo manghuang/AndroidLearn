@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.VideoView;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,18 +22,16 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-
-    String currentPhotoPath;
-
-    static final int REQUEST_TAKE_PHOTO = 1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+
+
+    // 发送消息
+    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
 
     public void sendMessage(View view){
         Intent intent = new Intent(this, DisplayMessageActivity.class);
@@ -43,21 +42,55 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            ImageView imageView = findViewById(R.id.imageView);
-            imageView.setImageBitmap(imageBitmap);
-        }
-    }
 
-    public void openCamera(View view){
-        System.out.println("点击");
+
+    // 获得图片
+    public void getImage(View view){
+        System.out.println("获得图片");
         dispatchTakePictureIntent();
         galleryAddPic();
+    }
+
+//    static final int REQUEST_IMAGE_CAPTURE = 1;
+//
+//    private void dispatchTakePictureIntent() {
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+//        }
+//    }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+//            System.out.println("成功返回");
+//            Bundle extras = data.getExtras();
+//            Bitmap imageBitmap = (Bitmap) extras.get("data");
+//            ImageView imageView = findViewById(R.id.imageView);
+//            imageView.setImageBitmap(imageBitmap);
+//        }
+//    }
+
+    String currentPhotoPath;
+
+    static final int REQUEST_TAKE_PHOTO = 1;
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        System.out.println(currentPhotoPath);
+        return image;
     }
 
     private void dispatchTakePictureIntent() {
@@ -68,37 +101,19 @@ public class MainActivity extends AppCompatActivity {
             File photoFile = null;
             try {
                 photoFile = createImageFile();
-                System.out.println("路径：" + photoFile);
             } catch (IOException ex) {
                 // Error occurred while creating the File
-                System.out.println("出现异常");
+                ex.printStackTrace();
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "com.example.android.fileprovider",
                         photoFile);
-                System.out.println("URI：" + photoURI);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
         }
-    }
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp;
-//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-//        File image = File.createTempFile(
-//                imageFileName,  /* prefix */
-//                ".jpg",         /* suffix */
-//                storageDir      /* directory */
-//        );
-        File imagePath = new File(getFilesDir(), "images");
-        File image = new File(imagePath, imageFileName+".jpg");
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
     }
 
     private void galleryAddPic() {
@@ -108,5 +123,36 @@ public class MainActivity extends AppCompatActivity {
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
     }
+
+
+
+    // 获得视频
+    public void getVideo(View view){
+        System.out.println("获得视频");
+        dispatchTakeVideoIntent();
+    }
+
+
+    static final int REQUEST_VIDEO_CAPTURE = 1;
+
+    private void dispatchTakeVideoIntent() {
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
+            Uri videoUri = intent.getData();
+            VideoView videoView = findViewById(R.id.videoView);
+            videoView.setVideoURI(videoUri);
+        }
+    }
+
+
+
 
 }

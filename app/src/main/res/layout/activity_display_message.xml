@@ -10,14 +10,14 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:drawableRight="@android:drawable/button_onoff_indicator_off"
+        android:layout_marginTop="216dp"
         android:fontFamily="sans-serif-thin"
         android:text="TextView"
         android:textColor="@color/teal_200"
         android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
