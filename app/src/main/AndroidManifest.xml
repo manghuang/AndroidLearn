@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.myfirstapp">
 
-    <!--版本-->
-    <uses-sdk android:maxSdkVersion="22" android:minSdkVersion="18"></uses-sdk>
-    <!--需要相机功能，可以控制在商店中的显示范围-->
+    <!--应用要求-->
+    <uses-sdk android:minSdkVersion="18" android:targetSdkVersion="29"></uses-sdk>
     <uses-feature android:name="android.hardware.camera" android:required="true"/>
 
-    <uses-permission android:name="android.permission.CAMERA2.any" />
+    <!--权限-->
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
@@ -18,7 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFirstApp">
 
-        <activity android:name=".DisplayMessageActivity" android:parentActivityName=".MainActivity">
+        <activity android:name=".DisplayMessageActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     // 获得图片
     private String currentPhotoPath;
-    private static final int REQUEST_TAKE_PHOTO = 1;
+    public static final int REQUEST_TAKE_PHOTO = 1;
 
 
     public void getImage(View view) {
